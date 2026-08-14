@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>For You, With Love 💌</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--main:#800020;--light:#b94f6b}
+body{margin:0;height:100vh;overflow:hidden;font-family:Georgia,serif;background:linear-gradient(135deg,#f6dce3,#fff4f6);background-size:cover;background-position:center;transition:.6s}
+.title{position:absolute;top:25px;width:100%;text-align:center;color:var(--main);z-index:10;text-shadow:0 2px 8px #0002}
+.title h1{margin:0;font-size:25px}.title p{margin:6px;font-size:13px;opacity:.75}
+.scene{width:100%;height:100vh;display:flex;align-items:center;justify-content:center;perspective:1400px}
+.envelope-wrapper{position:relative;width:330px;height:225px;transform-style:preserve-3d;filter:drop-shadow(0 25px 25px #3200144d)}
+.envelope{position:absolute;inset:0;background:linear-gradient(145deg,#fff,#faf7f7);border:5px solid var(--main);border-radius:8px;transform-style:preserve-3d}
+.envelope-front{position:absolute;inset:0;overflow:hidden;z-index:4}
+.envelope-front:before,.envelope-front:after{content:"";position:absolute;width:280px;height:5px;background:var(--main);bottom:50px}
+.envelope-front:before{left:-40px;transform:rotate(32deg)}.envelope-front:after{right:-40px;transform:rotate(-32deg)}
+.flap{position:absolute;left:-5px;top:-5px;width:calc(100% + 10px);height:145px;background:linear-gradient(145deg,#fff,#f5eeee);border:5px solid var(--main);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform 1s cubic-bezier(.2,.8,.2,1);z-index:10}
+.letter{position:absolute;width:285px;height:340px;left:50%;top:15px;transform:translateX(-50%) translateY(0) translateZ(20px);background:linear-gradient(135deg,#fffef9,#fff9ec);border:2px solid var(--main);border-radius:6px;padding:25px 20px;opacity:0;z-index:2;transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1);box-shadow:0 25px 35px #32001440,inset 0 0 20px #8000200a;transform-style:preserve-3d;touch-action:none;cursor:grab}
+.letter:before{content:"";position:absolute;inset:8px;border:1px solid #80002033;pointer-events:none}
+.open .flap{transform:rotateX(180deg)}.open .letter{opacity:1;transform:translateX(-50%) translateY(-155px) translateZ(100px);z-index:20}
+.letter h2{text-align:center;color:var(--main);margin-top:0;font-size:22px}.letter small{display:block;text-align:center;color:var(--light);margin-bottom:15px}
+textarea{width:100%;height:220px;border:0;outline:0;resize:none;background:transparent;font-family:Georgia,serif;color:#4c1825;font-size:17px;line-height:1.6}textarea::placeholder{color:#b8959d}
+.open-btn{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;border:5px solid #fff;background:radial-gradient(circle at 30% 25%,var(--light),var(--main));color:#fff;font-weight:bold;z-index:30;cursor:pointer;box-shadow:0 8px 25px #50001466;animation:pulse 2s infinite}
+.open .open-btn{opacity:0;pointer-events:none}@keyframes pulse{70%{box-shadow:0 0 0 18px #80002000}}
+.controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100;width:100%;justify-content:center}
+.control{padding:10px 13px;border:2px solid var(--main);border-radius:25px;background:#ffffffe6;color:var(--main);font-size:11px;font-weight:bold;cursor:pointer;box-shadow:0 5px 15px #0002}
+input{display:none}
+.heart{position:fixed;bottom:-40px;z-index:200;pointer-events:none;animation:fly 4s linear forwards}@keyframes fly{100%{transform:translateY(-110vh) translateX(var(--move)) scale(1.5) rotate(40deg);opacity:0}}
+.sparkle{position:fixed;color:#fff;font-size:20px;z-index:250;pointer-events:none;animation:sparkle 1.4s ease-out forwards}@keyframes sparkle{100%{opacity:0;transform:scale(2) translateY(-80px)}}
+@media(max-width:500px){.envelope-wrapper{width:310px;height:210px}.letter{width:275px}.open .letter{transform:translateX(-50%) translateY(-145px) translateZ(100px)}.title h1{font-size:22px}.control{padding:9px 10px;font-size:10px}}
+</style>
+</head>
+<body>
+<div class="title"><h1>For You, With Love 💌</h1><p>Something special is waiting inside...</p></div>
+<div class="scene"><div class="envelope-wrapper" id="envelopeWrapper">
+<div class="letter" id="letter"><h2>💌 My Letter</h2><small>A little message from my heart</small><textarea placeholder="Write anything you want here..."></textarea></div>
+<div class="envelope"><div class="envelope-front"></div><div class="flap"></div></div>
+<button class="open-btn" onclick="openEnvelope()">OPEN ❤️</button>
+</div></div>
+<div class="controls">
+<label class="control">🖼️ BACKGROUND<input type="file" accept="image/*" onchange="changeBackground(event)"></label>
+<label class="control">🎨 COLOR<input type="color" value="#800020" onchange="changeColor(this.value)"></label>
+<button class="control" onclick="closeEnvelope()">🔙 CLOSE</button>
+</div>
+<script>
+function openEnvelope(){document.getElementById("envelopeWrapper").classList.add("open");createHearts();createSparkles()}
+function closeEnvelope(){document.getElementById("envelopeWrapper").classList.remove("open");currentY=-155;document.getElementById("letter").style.transform="translateX(-50%) translateY(-155px) translateZ(100px)";document.querySelectorAll(".heart,.sparkle").forEach(x=>x.remove())}
+function changeBackground(e){let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);document.body.style.backgroundImage=`linear-gradient(#0002,#0002),url("${u}")`;document.body.style.backgroundSize="cover";document.body.style.backgroundPosition="center"}
+function changeColor(c){document.documentElement.style.setProperty("--main",c);document.documentElement.style.setProperty("--light",c)}
+function createHearts(){let a=["❤️","💕","💗","💖","💓","💘","💝","♥️"];for(let i=0;i<80;i++)setTimeout(()=>{let h=document.createElement("div");h.className="heart";h.innerHTML=a[Math.floor(Math.random()*a.length)];h.style.left=Math.random()*100+"vw";h.style.fontSize=15+Math.random()*30+"px";h.style.setProperty("--move",Math.random()*200-100+"px");h.style.animationDuration=3+Math.random()*3+"s";document.body.appendChild(h);setTimeout(()=>h.remove(),7000)},i*55)}
+function createSparkles(){for(let i=0;i<35;i++)setTimeout(()=>{let s=document.createElement("div");s.className="sparkle";s.innerHTML="✦";s.style.left=Math.random()*100+"vw";s.style.top=Math.random()*100+"vh";document.body.appendChild(s);setTimeout(()=>s.remove(),1500)},i*70)}
+const letter=document.getElementById("letter");let dragging=false,startY=0,startLetterY=-155,currentY=-155;
+function move(y){let n=startLetterY+y-startY;if(n>30)n=30;if(n<-230)n=-230;currentY=n;letter.style.transform=`translateX(-50%) translateY(${n}px) translateZ(100px)`}
+letter.addEventListener("touchstart",e=>{dragging=true;startY=e.touches[0].clientY;startLetterY=currentY},{passive:true});
+letter.addEventListener("touchmove",e=>{if(dragging)move(e.touches[0].clientY)},{passive:true});
+letter.addEventListener("touchend",()=>dragging=false);
+letter.addEventListener("mousedown",e=>{dragging=true;startY=e.clientY;startLetterY=currentY});
+document.addEventListener("mousemove",e=>{if(dragging)move(e.clientY)});document.addEventListener("mouseup",()=>dragging=false);
+</script>
+</body>
+</html>
